@@ -32,6 +32,18 @@ const Login = () => {
       setLoader(false);
     }
   };
+  const handleGoogleLogin = async () => {
+    // e.preventDefault();
+    // setLoader(true);
+    try {
+      await signInWithGoogle();
+      navigate("/dashboard");
+    } catch (err) {
+      handleAlert("Something went wrong, Try again!", "error");
+    } finally {
+      setLoader(false);
+    }
+  };
 
   return (
     <div className="flex flex-col p-2 h-screen md:overflow-hidden md:items-center">
@@ -103,7 +115,7 @@ const Login = () => {
             px-6 py-3 rounded-lg border w-full 
             hover:text-white hover:bg-red-500"
             iconClassName="text-red-500"
-            onClick={() => signInWithGoogle()}
+            onClick={handleGoogleLogin}
           />
         </div>
       </div>

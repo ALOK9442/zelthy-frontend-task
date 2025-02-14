@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/auth/login.jsx";
 import Landing from "./pages/landing/landing.jsx";
 import SignupPage from "./pages/auth/signup.jsx";
+import Dashboard from "./pages/dashboard/dashboard.jsx";
+import AuthLayout from "./protectedrouting/authlayout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupPage />,
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <AuthLayout authentication={true}>
+            <Dashboard />
+          </AuthLayout>
+        ),
       },
     ],
   },

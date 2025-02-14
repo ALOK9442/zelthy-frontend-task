@@ -2,7 +2,7 @@ import { FaGoogle } from "react-icons/fa";
 import Button from "../../components/button/button";
 import Logo from "../../utils/logo";
 import InputBox from "../../components/input/input";
-import { signInWithGoogle, signUpWithEmail } from "../../firebase/auth";
+import { handleLogout, signInWithGoogle, signUpWithEmail } from "../../firebase/auth";
 import { useState } from "react";
 import { handleAlert } from "../../utils/handlealert";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,7 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
+  handleLogout();
 
   return (
     <div className="flex flex-col p-2 h-screen md:overflow-hidden md:items-center">
