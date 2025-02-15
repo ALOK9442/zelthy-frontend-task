@@ -2,9 +2,7 @@ import { FaGoogle } from "react-icons/fa";
 import Button from "../../components/button/button";
 import "./landing.css";
 import { useNavigate } from "react-router-dom";
-import { signInWithGoogle } from "../../firebase/auth";
 import Logo from "../../utils/logo";
-import { handleAlert } from "../../utils/handlealert";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -15,15 +13,6 @@ const Landing = () => {
     "Pricing",
     "Resources",
   ];
-
-  const handleGoogleSignup = async () => {
-    try {
-      await signInWithGoogle();
-      navigate("/dashboard");
-    } catch (error) {
-      handleAlert("Error signing up with Google", "error");
-    }
-  };
 
   return (
     <div className="relative min-h-[100dvh] bg-transparent flex flex-col items-center font-semibold overflow-hidden">
@@ -106,7 +95,7 @@ const Landing = () => {
             buttonText={`Sign up with Google`}
             icon={FaGoogle}
             iconClassName="text-red-500"
-            onClick={handleGoogleSignup}
+            onClick={() => navigate("/signup")}
           />
           <p className="mt-4 text-sm text-gray-500">OR</p>
           <a

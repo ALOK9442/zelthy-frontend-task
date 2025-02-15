@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import TextAvatar from "./avatar";
-import { useNavigate } from "react-router-dom";
 
 export default function Logo() {
   const navigate = useNavigate();
