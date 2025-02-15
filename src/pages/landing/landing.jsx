@@ -2,7 +2,9 @@ import { FaGoogle } from "react-icons/fa";
 import Button from "../../components/button/button";
 import "./landing.css";
 import { useNavigate } from "react-router-dom";
+import { signInWithGoogle } from "../../firebase/auth";
 import Logo from "../../utils/logo";
+import { handleAlert } from "../../utils/handlealert";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ const Landing = () => {
     "Resources",
   ];
 
-  const handleSignupWithGoogle = async () => {
+  const handleGoogleSignup = async () => {
     try {
       await signInWithGoogle();
       navigate("/dashboard");
