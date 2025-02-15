@@ -10,10 +10,7 @@ export default function AuthLayout({ children, authentication = true }) {
   const [loader, setLoader] = useState(true);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-          if (user) {
-            console.log("User is logged in:", user);
-            navigate("/dashboard");
-          } else {
+          if (!user && authentication) {
             navigate("/login");
           }
           setLoader(false);

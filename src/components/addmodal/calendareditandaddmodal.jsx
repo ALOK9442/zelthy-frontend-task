@@ -13,6 +13,11 @@ export default function EditAndAddModal({
   setEndTime,
   overlayVariants,
   modalVariants,
+  showRecurring,
+  setShowRecurring,
+  recurringDays,
+  setRecurringDays,
+  handleCopyToNextDay,
 }) {
   return (
     <motion.div
@@ -29,6 +34,38 @@ export default function EditAndAddModal({
         aria-modal="true"
         aria-labelledby="modal-title"
       >
+        <div className="mt-4 space-y-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={showRecurring}
+              onChange={(e) => setShowRecurring(e.target.checked)}
+              className="form-checkbox h-4 w-4 text-blue-600"
+            />
+            <span className="text-sm">Repeat daily for</span>
+            <input
+              type="number"
+              min="1"
+              max="30"
+              value={recurringDays}
+              onChange={(e) =>
+                setRecurringDays(Math.min(30, Math.max(1, e.target.value)))
+              }
+              className="w-16 px-2 py-1 border rounded"
+              disabled={!showRecurring}
+            />
+            <span className="text-sm">days</span>
+          </label>
+
+          {isEditing && (
+            <button
+              onClick={handleCopyToNextDay}
+              className="w-full py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+            >
+              Copy to Next Day
+            </button>
+          )}
+        </div>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 id="modal-title" className="text-xl font-semibold">

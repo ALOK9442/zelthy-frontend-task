@@ -26,6 +26,7 @@ const Login = () => {
     }
     try {
       await signInWithEmail(email, password);
+      navigate("/dashboard");
     } catch (err) {
       handleAlert("Invalid email or password", "error");
     } finally {
@@ -33,8 +34,6 @@ const Login = () => {
     }
   };
   const handleGoogleLogin = async () => {
-    // e.preventDefault();
-    // setLoader(true);
     try {
       await signInWithGoogle();
       navigate("/dashboard");

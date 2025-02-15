@@ -23,10 +23,6 @@ const SearchBox = () => {
       return;
     }
     setIsValidEmail(true);
-    console.log(
-      "emailyNavigating to:",
-      `/schedule/${encodeURIComponent(searchEmail)}`
-    );
     navigate(`/schedule/${encodeURIComponent(searchEmail)}`);
   };
 

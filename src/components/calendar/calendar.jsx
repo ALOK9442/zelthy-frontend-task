@@ -11,6 +11,8 @@ import {
   addUnavailableSlot,
   updateUnavailableSlot,
   deleteUnavailableSlot,
+  createDailyRecurringSlot,
+  copyUnavailableSlot,
 } from "../../firebase/slots";
 import { handleAlert } from "../../utils/handlealert";
 import EditAndAddModal from "../addmodal/calendareditandaddmodal";
@@ -18,6 +20,8 @@ import EditAndAddModal from "../addmodal/calendareditandaddmodal";
 const localizer = momentLocalizer(moment);
 
 const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
+  const [showRecurring, setShowRecurring] = useState(false);
+  const [recurringDays, setRecurringDays] = useState(7);
   const [view, setView] = useState("week");
   const [events, setEvents] = useState([]);
   const [timezone, setTimezone] = useState(
@@ -40,32 +44,28 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
   };
-
+  const fetchSlots = async () => {
+    const slots = await getUnavailableSlots(userId);
+    
+    const formattedSlots = slots.map((slot) => {
+      const start = moment
+        .unix(slot.startTime.seconds)
+        .utc()
+        .tz(timezone)
+        .toDate();
+      const end = moment.unix(slot.endTime.seconds).utc().tz(timezone).toDate();
+      return {
+        id: slot.id,
+        title: "Unavailable",
+        start,
+        end,
+        allDay: false,
+        color: "#FF5733",
+      };
+    });
+    setEvents(formattedSlots);
+  };
   useEffect(() => {
-    const fetchSlots = async () => {
-      const slots = await getUnavailableSlots(userId);
-      const formattedSlots = slots.map((slot) => {
-        const start = moment
-          .unix(slot.startTime.seconds)
-          .utc()
-          .tz(timezone)
-          .toDate();
-        const end = moment
-          .unix(slot.endTime.seconds)
-          .utc()
-          .tz(timezone)
-          .toDate();
-        return {
-          id: slot.id,
-          title: "Unavailable",
-          start,
-          end,
-          allDay: false,
-          color: "#FF5733",
-        };
-      });
-      setEvents(formattedSlots);
-    };
     fetchSlots();
   }, [userId, timezone]);
 
@@ -154,6 +154,17 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
           handleAlert("Selected time conflicts with existing slot.", "warning");
           return;
         }
+        if (showRecurring) {
+          const success = await createDailyRecurringSlot(
+            userId,
+            utcStart,
+            utcEnd,
+            recurringDays
+          );
+          if (success) {
+            handleAlert("Recurring slots created successfully", "success");
+          }
+        }
 
         const newSlot = await addUnavailableSlot(userId, utcStart, utcEnd);
         setEvents([
@@ -167,6 +178,7 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
           },
         ]);
       }
+      await fetchSlots();
       handleModalClose();
     } catch (error) {
       console.error("Error saving slot:", error);
@@ -180,6 +192,27 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
     handleModalClose();
   };
 
+  const handleCopyToNextDay = async () => {
+    if (!selectedEvent) return;
+    const success = await copyUnavailableSlot(userId, selectedEvent.id);
+    await fetchSlots();
+    if (success) {
+      handleAlert("Slot copied to next day", "success");
+      handleModalClose();
+    }
+  };
+
+
+  const calendarFormats = {
+    timeGutterFormat: (date) => moment(date).tz(timezone).format("HH:mm"),
+    eventTimeRangeFormat: ({ start, end }) =>
+      `${moment(start).tz(timezone).format("HH:mm")} - ${moment(end)
+        .tz(timezone)
+        .format("HH:mm")}`,
+    dayHeaderFormat: (date) =>
+      moment(date).tz(timezone).format("dddd, MMM D"),
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -187,30 +220,34 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
       className="p-4 md:p-6 mx-auto bg-white shadow-lg rounded-xl max-w-7xl"
     >
       <div className="mb-6 space-y-2">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Schedule Management
-        </h2>
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-          <div className="w-full md:w-auto">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Timezone:
-            </label>
-            <select
-              className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-            >
-              {Intl.supportedValuesOf("timeZone").map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz}
-                </option>
-              ))}
-            </select>
+        {currentUserId === userId && (
+          <h2 className="text-2xl font-bold text-gray-800">
+            Schedule Management
+          </h2>
+        )}
+        {currentUserId === userId && (
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+            <div className="w-full md:w-auto">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Timezone:
+              </label>
+              <select
+                className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+              >
+                {Intl.supportedValuesOf("timeZone").map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <p className="text-sm text-red-700 bg-red-100 px-3 py-1.5 rounded-lg">
+              Click/Tap on time slots to mark/edit availability
+            </p>
           </div>
-          <p className="text-sm text-red-700 bg-red-100 px-3 py-1.5 rounded-lg">
-            Click/Tap on time slots to mark/edit availability
-          </p>
-        </div>
+        )}
       </div>
 
       <motion.div
@@ -240,15 +277,17 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
           slotPropGetter={() => ({
             className: "border-r border-b border-gray-100",
           })}
-          formats={{
-            timeGutterFormat: "HH:mm",
-            eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
-              `${localizer.format(
-                start,
-                "HH:mm",
-                culture
-              )} - ${localizer.format(end, "HH:mm", culture)}`,
-          }}
+          // formats={{
+          //   timeGutterFormat: "HH:mm",
+          //   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
+          //     `${localizer.format(
+          //       start,
+          //       "HH:mm",
+          //       culture
+          //     )} - ${localizer.format(end, "HH:mm", culture)}`,
+          // }}
+          formats={calendarFormats}
+          longPressThreshold={0}
           step={30}
           timeslots={2}
         />
@@ -267,6 +306,11 @@ const CustomCalendar = ({ userId, currentUserId, readOnly }) => {
             handleModalClose={handleModalClose}
             overlayVariants={overlayVariants}
             modalVariants={modalVariants}
+            showRecurring={showRecurring}
+            setShowRecurring={setShowRecurring}
+            recurringDays={recurringDays}
+            setRecurringDays={setRecurringDays}
+            handleCopyToNextDay={handleCopyToNextDay}
           />
         )}
       </AnimatePresence>

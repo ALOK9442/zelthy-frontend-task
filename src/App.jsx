@@ -7,8 +7,7 @@ import { ToastContainer } from "react-toastify";
 import BigLoader from "./utils/loader";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+ 
   return (
     <>
       <ToastContainer />

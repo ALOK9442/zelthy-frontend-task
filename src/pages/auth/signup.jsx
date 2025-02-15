@@ -2,7 +2,10 @@ import { FaGoogle } from "react-icons/fa";
 import Button from "../../components/button/button";
 import Logo from "../../utils/logo";
 import InputBox from "../../components/input/input";
-import { handleLogout, signInWithGoogle, signUpWithEmail } from "../../firebase/auth";
+import {
+  signInWithGoogle,
+  signUpWithEmail,
+} from "../../firebase/auth";
 import { useState } from "react";
 import { handleAlert } from "../../utils/handlealert";
 import { useNavigate } from "react-router-dom";
@@ -31,15 +34,23 @@ export default function SignupPage() {
     try {
       await signUpWithEmail(email, password, username);
       handleAlert("Account created successfully", "success");
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       console.log(err);
-      handleAlert("Something went wrong, Try again!", "error");
+      handleAlert("Email is already in use", "error");
     } finally {
       setLoading(false);
     }
   };
-  handleLogout();
+
+  const handleSignupWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
+      navigate("/dashboard");
+    } catch (err) {
+      handleAlert("Something went wrong, Try again!", "error");
+    }
+  }
 
   return (
     <div className="flex flex-col p-2 h-screen md:overflow-hidden md:items-center">
@@ -142,7 +153,7 @@ export default function SignupPage() {
           w-full hover:text-white 
           hover:bg-blue-500"
             iconClassName="text-red-500"
-            onClick={() => signInWithGoogle()}
+            onClick={handleSignupWithGoogle}
           />
         </div>
       </div>

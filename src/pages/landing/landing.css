@@ -1,6 +1,4 @@
-/* @tailwind utilities; */
 
-/* @layer utilities { */
   @keyframes move1 {
     0% { transform: translate(-10%, -10%) scale(0.9); }
     50% { transform: translate(10%, 20%) scale(1); }
@@ -20,4 +18,3 @@
   .animate-move2 {
     animation: move2 25s ease-in-out infinite alternate;
   }
-/* } */

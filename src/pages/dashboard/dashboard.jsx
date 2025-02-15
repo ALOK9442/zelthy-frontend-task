@@ -2,16 +2,14 @@ import { onAuthStateChanged } from "firebase/auth";
 import CalendarComponent from "../../components/calendar/calendar";
 import { useEffect, useState } from "react";
 import { auth } from "../../firebase";
-import BigLoader from "../../utils/loader";
 import { Box, CircularProgress } from "@mui/material";
 import Logo from "../../utils/logo";
 import SearchBox from "../../components/search/searchbox";
 import HeaderProfile from "../../components/headerprofile/headerprofile";
 import { handleLogout } from "../../firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
-import { faSearch, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {  faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip } from "@mui/material";
 
 const sidebarVariants = {
   open: { x: 0, opacity: 1 },
@@ -118,7 +116,6 @@ export default function Dashboard() {
       </AnimatePresence>
 
       <div className=" transition-all">
-       
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div className="hidden md:block">
@@ -158,7 +155,11 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <CalendarComponent userId={userId} currentUserId={userId} />
+            <CalendarComponent
+              userId={userId}
+              currentUserId={userId}
+              readOnly={false}
+            />
           </motion.div>
         </main>
       </div>

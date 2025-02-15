@@ -9,6 +9,7 @@ import SignupPage from "./pages/auth/signup.jsx";
 import Dashboard from "./pages/dashboard/dashboard.jsx";
 import AuthLayout from "./protectedrouting/authlayout.jsx";
 import UserSchedulePage from "./pages/userschedule/userschedule.jsx";
+import ProfilePage from "./pages/profile/userprofile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,14 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
         // element: <h1>hello</h1>,
+      },
+      {
+        path: "/profile",
+        element: (
+          <AuthLayout authentication={true}>
+            <ProfilePage />
+          </AuthLayout>
+        ),
       },
     ],
   },

@@ -2,8 +2,10 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeaderProfile = ({ imgLink, name, email, onLogout }) => {
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
 
   return (
@@ -12,11 +14,17 @@ const HeaderProfile = ({ imgLink, name, email, onLogout }) => {
       className="relative flex items-center gap-3 cursor-pointer"
       onClick={() => setShowMenu(!showMenu)}
     >
-      <img
-        src={imgLink}
-        alt="Profile"
-        className="w-10 h-10 rounded-full border-2 border-blue-500"
-      />
+      {imgLink ? (
+        <img
+          src={imgLink}
+          alt="Profile"
+          className="w-10 h-10 rounded-full border-2 border-blue-500"
+        />
+      ) : (
+        <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full">
+          {name[0].toUpperCase()}
+        </div>
+      )}
       <div className="hidden md:block">
         <p className="font-medium text-gray-800">{name}</p>
         <p className="text-sm text-gray-500">{email}</p>
@@ -39,7 +47,12 @@ const HeaderProfile = ({ imgLink, name, email, onLogout }) => {
             <div className="px-4 py-2 text-sm text-gray-500 border-b">
               {email}
             </div>
-            <button className="w-full px-4 py-2 text-left hover:bg-gray-50">
+            <button
+              className="w-full px-4 py-2 text-left hover:bg-gray-50"
+              onClick={() => {
+                setShowMenu(false), navigate("/profile");
+              }}
+            >
               Profile
             </button>
             <button className="w-full px-4 py-2 text-left hover:bg-gray-50">

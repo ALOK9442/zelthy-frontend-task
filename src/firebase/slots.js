@@ -1,12 +1,25 @@
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export const addUnavailableSlot = async (userId, startTime, endTime) => {
   try {
-    const docRef = await addDoc(collection(db, "users", userId, "unavailableSlots"), {
-      startTime: startTime,
-      endTime: endTime,
-    });
+    const docRef = await addDoc(
+      collection(db, "users", userId, "unavailableSlots"),
+      {
+        startTime: startTime,
+        endTime: endTime,
+      }
+    );
     return { id: docRef.id, startTime, endTime };
   } catch (error) {
     console.error("Error marking unavailable slot:", error);
@@ -17,7 +30,7 @@ export const addUnavailableSlot = async (userId, startTime, endTime) => {
 export const getUnavailableSlots = async (userId) => {
   try {
     const slotsRef = collection(db, "users", userId, "unavailableSlots");
-    console.log("slotsRef",slotsRef);
+    
     const snapshot = await getDocs(slotsRef);
     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
@@ -26,7 +39,12 @@ export const getUnavailableSlots = async (userId) => {
   }
 };
 
-export const updateUnavailableSlot = async (userId, slotId, newStartTime, newEndTime) => {
+export const updateUnavailableSlot = async (
+  userId,
+  slotId,
+  newStartTime,
+  newEndTime
+) => {
   try {
     const slotRef = doc(db, "users", userId, "unavailableSlots", slotId);
     await updateDoc(slotRef, {
@@ -71,17 +89,16 @@ export const copyUnavailableSlot = async (userId, slotId) => {
 
 export const searchUserByEmail = async (email) => {
   try {
-    console.log("emaily",email);
     const usersRef = collection(db, "users");
-    console.log("emailyuserref",usersRef);
+   
     const q = query(usersRef, where("email", "==", email));
-    console.log("emailyq",q);
+
     const snapshot = await getDocs(q);
 
-    
     if (snapshot.empty) return null;
     const userDoc = snapshot.docs[0];
     const userid = userDoc.id;
+    const userData = userDoc.data();
 
     const slotsRef = collection(db, "users", userid, "unavailableSlots");
     const slotsSnapshot = await getDocs(slotsRef);
@@ -90,10 +107,46 @@ export const searchUserByEmail = async (email) => {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log("emailyunavailableSlots",unavailableSlots);
-    return unavailableSlots;
+    return {
+      id: userid,
+      name: userData.username,
+      email: userData.email,
+      photoURL: userData.photoURL,
+      unavailableSlots,
+    };
   } catch (error) {
     console.error("Error searching user:", error);
+    return null;
+  }
+};
+
+export const createDailyRecurringSlot = async (
+  userId,
+  startTime,
+  endTime,
+  days
+) => {
+  const slots = [];
+  try {
+    for (let i = 0; i < days; i++) {
+      const newStart = new Date(startTime);
+      const newEnd = new Date(endTime);
+      newStart.setDate(newStart.getDate() + i);
+      newEnd.setDate(newEnd.getDate() + i);
+
+      const docRef = await addDoc(
+        collection(db, "users", userId, "unavailableSlots"),
+        {
+          startTime: newStart,
+          endTime: newEnd,
+          isRecurring: i > 0,
+        }
+      );
+      slots.push({ id: docRef.id, startTime: newStart, endTime: newEnd });
+    }
+    return slots;
+  } catch (error) {
+    console.error("Error creating recurring slots:", error);
     return null;
   }
 };
