@@ -92,19 +92,9 @@ const Landing = () => {
         <div className="mt-6 flex flex-col justify-center">
           <Button
             className="flex items-center justify-center bg-blue-500 text-white shadow-md sm:px-6 sm:py-3 rounded-lg border"
-            buttonText={`Sign up with Google`}
-            icon={FaGoogle}
-            iconClassName="text-red-500"
+            buttonText={`Sign up with email`}
             onClick={() => navigate("/signup")}
           />
-          <p className="mt-4 text-sm text-gray-500">OR</p>
-          <a
-            href=""
-            className="text-blue-500 hover:text-white hover:bg-blue-500 hover:rounded-md sm:py-4 sm:px-2 mt-2 block"
-            onClick={() => navigate("/signup")}
-          >
-            Sign up with email
-          </a>
         </div>
       </section>
     </div>
