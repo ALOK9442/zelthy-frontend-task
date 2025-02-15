@@ -14,6 +14,15 @@ const Landing = () => {
     "Resources",
   ];
 
+  const handleSignupWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
+      navigate("/dashboard");
+    } catch (err) {
+      handleAlert("Something went wrong, Try again!", "error");
+    }
+  }
+
   return (
     <div className="relative min-h-[100dvh] bg-transparent flex flex-col items-center font-semibold overflow-hidden">
       <div className="absolute pointer-events-none w-full h-full overflow-hidden">
@@ -95,6 +104,7 @@ const Landing = () => {
             buttonText={`Sign up with Google`}
             icon={FaGoogle}
             iconClassName="text-red-500"
+            onClick={handleGoogleSignup}
           />
           <p className="mt-4 text-sm text-gray-500">OR</p>
           <a
