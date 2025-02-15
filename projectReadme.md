@@ -20,7 +20,7 @@ A modern scheduling solution with real-time availability tracking and team coord
 
 - **Frontend**: React, Tailwind CSS, Framer Motion
 - **Backend**: Firebase Authentication, Firestore
-- **Utilities**: date-fns, Font Awesome Icons
+- **Utilities**: material ui,framer-motion, Font Awesome Icons
 
 ## Installation
 
