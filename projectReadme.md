@@ -2,8 +2,6 @@
 
 A modern scheduling solution with real-time availability tracking and team coordination features.
 
-![Application Preview](https://zelthy-frontend-task.vercel.app/)
-
 ## Key Features
 
 - 📅 Interactive calendar with drag-and-drop functionality
