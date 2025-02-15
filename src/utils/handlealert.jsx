@@ -13,7 +13,7 @@ export const handleAlert = (message, type) => {
         position: 'top-center',
       });
     } else {
-      toast.info('Something went wrong', {
+      toast.info(message, {
         position: 'top-center',
       });
     }

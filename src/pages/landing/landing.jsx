@@ -6,7 +6,13 @@ import Logo from "../../utils/logo";
 
 const Landing = () => {
   const navigate = useNavigate();
-  const Links = ["Product", "Solutions", "Enterprise", "Pricing", "Resources"];
+  const Links = [
+    "DashBoard",
+    "Solutions",
+    "Enterprise",
+    "Pricing",
+    "Resources",
+  ];
 
   return (
     <div className="relative min-h-[100dvh] bg-transparent flex flex-col items-center font-semibold overflow-hidden">
@@ -37,15 +43,25 @@ const Landing = () => {
       <header className="w-full flex justify-between items-center px-8 py-4 bg-white shadow-md">
         <Logo />
         <nav className="hidden md:flex space-x-6 text-gray-700">
-          {Links.map((link, index) => (
-            <a
-              key={index}
-              href="#"
-              className="hover:text-blue-600 cursor-pointer"
-            >
-              {link}
-            </a>
-          ))}
+          {Links.map((link, index) =>
+            link === "DashBoard" ? (
+              <a
+                key={index}
+                onClick={() => navigate("/dashboard")}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                {link}
+              </a>
+            ) : (
+              <a
+                key={index}
+                href="#"
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                {link}
+              </a>
+            )
+          )}
         </nav>
         <div className="hidden sm:flex items-center sm:space-x-4">
           <Button
@@ -60,8 +76,11 @@ const Landing = () => {
         </div>
       </header>
       <section className="text-center mt-16 px-4 md:px-0 flex flex-col sm:gap-6 items-center">
-        <span className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm w-fit">
-          New feature
+        <span
+          className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-md w-fit cursor-pointer"
+          onClick={() => navigate("/dashboard")}
+        >
+          DashBoard
         </span>
         <h2 className="text-4xl sm:text-6xl font-bold text-[#133558]">
           Easy scheduling ahead

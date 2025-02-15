@@ -8,6 +8,7 @@ import Landing from "./pages/landing/landing.jsx";
 import SignupPage from "./pages/auth/signup.jsx";
 import Dashboard from "./pages/dashboard/dashboard.jsx";
 import AuthLayout from "./protectedrouting/authlayout.jsx";
+import UserSchedulePage from "./pages/userschedule/userschedule.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,12 +35,21 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
+      {
+        path: "/schedule/:email",
+        element: (
+          <AuthLayout authentication={true}>
+            <UserSchedulePage />
+          </AuthLayout>
+        ),
+        // element: <h1>hello</h1>,
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+  // <StrictMode>
+  <RouterProvider router={router} />
+  // </StrictMode>
 );

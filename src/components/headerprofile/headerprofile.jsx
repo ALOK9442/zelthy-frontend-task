@@ -1,29 +1,26 @@
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function HeaderProfile({
-  imgLink,
-  name,
-  email,
-  onLogout,
-  onProfile,
-  onSettings,
-}) {
+const HeaderProfile = ({ imgLink, name, email, onLogout }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <div
-      className="relative flex items-center"
-      onClick={() => {
-        setShowMenu((prev) => !prev);
-      }}
-      style={{
-        fontFamily: "Montserrat, sans-serif",
-      }}
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="relative flex items-center gap-3 cursor-pointer"
+      onClick={() => setShowMenu(!showMenu)}
     >
-      <img src={imgLink} alt="Profile" className="sm:w-10 sm:h-10 w-6 h-6 rounded-full" />
-      <h4 className="sm:text-lg text-xs font-semibold">{name}</h4>
+      <img
+        src={imgLink}
+        alt="Profile"
+        className="w-10 h-10 rounded-full border-2 border-blue-500"
+      />
+      <div className="hidden md:block">
+        <p className="font-medium text-gray-800">{name}</p>
+        <p className="text-sm text-gray-500">{email}</p>
+      </div>
       <FontAwesomeIcon
         icon={faChevronDown}
         className={`transition-transform duration-300 ${
@@ -31,39 +28,34 @@ export default function HeaderProfile({
         }`}
       />
 
-      {showMenu && (
-        <DropDownMenu
-          email={email}
-          onProfile={onProfile}
-          onSettings={onSettings}
-          onLogout={onLogout}
-        />
-      )}
-    </div>
+      <AnimatePresence>
+        {showMenu && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute md:right-0 top-12 bg-white rounded-lg shadow-xl py-2 w-48 z-1000"
+          >
+            <div className="px-4 py-2 text-sm text-gray-500 border-b">
+              {email}
+            </div>
+            <button className="w-full px-4 py-2 text-left hover:bg-gray-50">
+              Profile
+            </button>
+            <button className="w-full px-4 py-2 text-left hover:bg-gray-50">
+              Settings
+            </button>
+            <button
+              onClick={onLogout}
+              className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50"
+            >
+              Logout
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
-}
+};
 
-function DropDownMenu({ email, onProfile, onSettings, onLogout }) {
-  return (
-    <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg w-fit">
-      <ul>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer">{email}</li>
-        <li
-          className="p-2 hover:bg-gray-100 cursor-pointer"
-          onClick={onProfile}
-        >
-          Profile
-        </li>
-        <li
-          className="p-2 hover:bg-gray-100 cursor-pointer"
-          onClick={onSettings}
-        >
-          Settings
-        </li>
-        <li className="p-2 hover:bg-gray-100 cursor-pointer" onClick={onLogout}>
-          Logout
-        </li>
-      </ul>
-    </div>
-  );
-}
+export default HeaderProfile;
