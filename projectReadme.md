@@ -2,7 +2,7 @@
 
 A modern scheduling solution with real-time availability tracking and team coordination features.
 
-![Application Preview](https://via.placeholder.com/800x400.png?text=Schedule+App+Preview)
+![Application Preview](https://zelthy-frontend-task.vercel.app/)
 
 ## Key Features
 
@@ -25,6 +25,7 @@ A modern scheduling solution with real-time availability tracking and team coord
 ## Installation
 
 1. Clone the repository:
-```bash
 git clone https://github.com/yourusername/schedule-app.git
 cd schedule-app
+2. Install Dependencies
+3. Run "npm run dev" to start the server.
